@@ -2,10 +2,11 @@ package com.example.obrestdatajpa.controllers;
 
 import com.example.obrestdatajpa.entities.Book;
 import com.example.obrestdatajpa.repositories.BookRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class BookController {
@@ -23,15 +24,23 @@ public class BookController {
     }
 
     //Bucar un libro por Id en BBDD
-    public Book findByID(Long id){
-        return null;
+    @GetMapping("/api/books/{id}")
+    public ResponseEntity<Book> findByID(@PathVariable Long id){
+        Optional<Book> book = bookRepository.findById(id);
+        //En caso de no encontrar el libro, deberia devolver "404 not found"
+        if(!book.isEmpty()){
+            return ResponseEntity.ok(book.get());
+        }
+        return ResponseEntity.notFound().build();
     }
     //Crear un nuevo libro en BBDD
-
+    @PostMapping("/api/books")
+    public Book create (@RequestBody Book book){
+        return  bookRepository.save(book);
+    }
 
     //Actualizar un libro en BBDD
 
     //Borrar un libro por Id en BBDD
-
-
+    
 }
